@@ -1,0 +1,9 @@
+# ── Download ──────────────────────────────────────────────────────
+# Update the filename here when you upload a new build to the
+# Cloudflare R2 bucket "disktree-pkg".
+/download  https://pub-1d081b2e10dd4a2ca6cc036de8faf421.r2.dev/DiskTree-1.0.0.pkg  302
+
+# ── SPA fallback ──────────────────────────────────────────────────
+/changelog  /index.html  200
+/privacy    /index.html  200
+/terms      /index.html  200

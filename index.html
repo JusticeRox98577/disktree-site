@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DiskTree — Disk Space Analyzer for Mac</title>
+  <meta name="description" content="See exactly what's eating your disk. Visual treemap, one-click cleanup, and real-time monitoring for macOS." />
+  <meta property="og:title" content="DiskTree — Disk Space Analyzer for Mac" />
+  <meta property="og:description" content="See exactly what's eating your disk. Visual treemap, one-click cleanup, and real-time monitoring for macOS." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/media/png/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="/media/png/og-image.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Lemon Squeezy overlay checkout -->
+  <!-- Replace YOUR_STORE and YOUR_PRODUCT_ID with your real Lemon Squeezy values -->
+  <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
+
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --base:     #1E1E2E;
+      --mantle:   #181825;
+      --crust:    #11111B;
+      --surface0: #313244;
+      --surface1: #45475A;
+      --surface2: #585B70;
+      --overlay0: #6C7086;
+      --subtext0: #A6ADC8;
+      --text:     #CDD6F4;
+      --blue:     #89B4FA;
+      --mauve:    #CBA6F7;
+      --green:    #A6E3A1;
+      --yellow:   #F9E2AF;
+      --peach:    #FAB387;
+      --teal:     #94E2D5;
+      --red:      #F38BA8;
+      --sapphire: #74C7EC;
+      --sky:      #89DCEB;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--crust);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* ── Nav ──────────────────────────────────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.3s, backdrop-filter 0.3s, border-color 0.3s;
+    }
+    .nav.scrolled {
+      background: rgba(17, 17, 27, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 17px; color: var(--text);
+    }
+    .nav-logo-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, #313244, #181825);
+      border: 1px solid rgba(137,180,250,0.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px; font-weight: 500; color: var(--subtext0);
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 18px; border-radius: 8px;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; border: none;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--subtext0);
+      border: 1px solid var(--surface1);
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--surface2); background: var(--surface0); }
+    .btn-primary {
+      background: var(--blue);
+      color: var(--crust);
+    }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(137,180,250,0.35); }
+    .btn-pro {
+      background: linear-gradient(135deg, #F9E2AF, #FAB387);
+      color: #11111B;
+    }
+    .btn-pro:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 4px 24px rgba(249,226,175,0.35); }
+    .btn-lg { padding: 13px 28px; font-size: 15px; border-radius: 10px; }
+
+    /* ── Hero ─────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center;
+      padding: 120px 24px 80px;
+      position: relative; overflow: hidden; text-align: center;
+    }
+    .hero-glow {
+      position: absolute; inset: 0; pointer-events: none;
+    }
+    .hero-glow::before {
+      content: '';
+      position: absolute; top: -10%; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 600px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(137,180,250,0.12) 0%, rgba(203,166,247,0.07) 40%, transparent 70%);
+      animation: glow-pulse 6s ease-in-out infinite;
+    }
+    .hero-glow::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(rgba(137,180,250,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    @keyframes glow-pulse {
+      0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+      50% { opacity: 0.7; transform: translateX(-50%) scale(1.08); }
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 99px;
+      background: rgba(137,180,250,0.1);
+      border: 1px solid rgba(137,180,250,0.25);
+      font-size: 12px; font-weight: 600; color: var(--blue);
+      letter-spacing: 0.05em; text-transform: uppercase;
+      margin-bottom: 28px; position: relative; z-index: 1;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--blue);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .hero-title {
+      font-size: clamp(44px, 7vw, 80px);
+      font-weight: 900; line-height: 1.05; letter-spacing: -0.03em;
+      margin-bottom: 24px; position: relative; z-index: 1;
+    }
+    .hero-title .grad {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--mauve) 50%, var(--sapphire) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: var(--subtext0); max-width: 560px; margin: 0 auto 40px;
+      line-height: 1.65; position: relative; z-index: 1;
+    }
+    .hero-actions {
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      justify-content: center; margin-bottom: 64px;
+      position: relative; z-index: 1;
+    }
+    .hero-meta {
+      font-size: 13px; color: var(--overlay0); position: relative; z-index: 1;
+    }
+    .hero-meta span { color: var(--subtext0); }
+
+    /* ── App Window Mockup ────────────────────────────────────── */
+    .mockup-wrap {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 960px; margin: 0 auto;
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    .mockup-shadow {
+      position: absolute; bottom: -40px; left: 10%; right: 10%; height: 60px;
+      background: radial-gradient(ellipse, rgba(137,180,250,0.2) 0%, transparent 70%);
+      filter: blur(20px);
+    }
+    .app-window {
+      border-radius: 14px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+      background: var(--mantle);
+    }
+    .window-chrome {
+      display: flex; align-items: center; gap: 8px;
+      padding: 13px 16px;
+      background: var(--mantle);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .traffic { width: 12px; height: 12px; border-radius: 50%; }
+    .traffic-red    { background: #FF5F57; }
+    .traffic-yellow { background: #FFBD2E; }
+    .traffic-green  { background: #28C840; }
+    .window-title {
+      flex: 1; text-align: center;
+      font-size: 12px; color: var(--overlay0); font-weight: 500;
+    }
+    .window-body {
+      display: flex; height: 520px;
+    }
+    .win-sidebar {
+      width: 180px; background: var(--mantle);
+      border-right: 1px solid rgba(255,255,255,0.05);
+      padding: 12px 8px; display: flex; flex-direction: column; gap: 2px;
+      flex-shrink: 0;
+    }
+    .win-sidebar-header {
+      padding: 12px 10px 16px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .win-sidebar-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--blue), var(--mauve));
+      border-radius: 8px; opacity: 0.9;
+    }
+    .win-sidebar-title {
+      font-size: 11px; font-weight: 700; color: var(--text);
+    }
+    .win-sidebar-badge {
+      font-size: 9px; padding: 2px 8px; border-radius: 99px;
+      background: rgba(249,226,175,0.15); color: var(--yellow);
+      font-weight: 600;
+    }
+    .win-nav-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 10px; border-radius: 7px; font-size: 11.5px; font-weight: 500;
+    }
+    .win-nav-item.active {
+      background: var(--surface0); color: var(--text);
+    }
+    .win-nav-item:not(.active) { color: var(--subtext0); }
+    .win-nav-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .win-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .win-toolbar {
+      padding: 10px 14px;
+      display: flex; align-items: center; gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: var(--mantle);
+    }
+    .win-path {
+      flex: 1; background: var(--surface0); border-radius: 6px;
+      padding: 5px 10px; font-size: 11px; font-family: 'JetBrains Mono', monospace;
+      color: var(--subtext0); border: 1px solid rgba(255,255,255,0.05);
+    }
+    .win-btn {
+      padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 600;
+      background: var(--surface0); color: var(--blue); border: none;
+      cursor: default;
+    }
+    /* Treemap */
+    .treemap {
+      flex: 1; padding: 8px; display: grid; gap: 4px; overflow: hidden;
+      grid-template-rows: 1fr 1fr;
+    }
+    .tm-row { display: flex; gap: 4px; }
+    .tm-cell {
+      border-radius: 6px; position: relative; overflow: hidden;
+      display: flex; align-items: flex-end; padding: 6px 8px;
+      cursor: default; transition: filter 0.2s;
+    }
+    .tm-cell::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.45));
+    }
+    .tm-label {
+      font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.9);
+      position: relative; z-index: 1; line-height: 1.2;
+    }
+    .tm-size { font-size: 8px; color: rgba(255,255,255,0.6); }
+
+    .cell-xcode  { background: linear-gradient(135deg, #3B4B7A, #2A3560); flex: 2.8; }
+    .cell-docker { background: linear-gradient(135deg, #2A5A5A, #1E4040); flex: 1.5; }
+    .cell-node   { background: linear-gradient(135deg, #4A3060, #2E1E40); flex: 1.2; }
+    .cell-home   { background: linear-gradient(135deg, #5A3A2A, #3D2518); flex: 1.8; }
+    .cell-cache  { background: linear-gradient(135deg, #2A4A3A, #1A3028); flex: 1.3; }
+    .cell-adobe  { background: linear-gradient(135deg, #4A2A3A, #2E1825); flex: 1.4; }
+    .cell-sys    { background: linear-gradient(135deg, #3A3A50, #252535); flex: 0.9; }
+
+    .win-statusbar {
+      padding: 6px 14px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 10px; color: var(--overlay0); font-family: 'JetBrains Mono', monospace;
+    }
+    .statusbar-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; }
+
+    /* ── Section commons ─────────────────────────────────────── */
+    section { padding: 96px 24px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--blue); margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800; letter-spacing: -0.025em; line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 17px; color: var(--subtext0); max-width: 540px; line-height: 1.65;
+    }
+
+    /* ── Features ────────────────────────────────────────────── */
+    .features-section { background: var(--crust); }
+    .features-grid {
+      display: grid; gap: 16px; margin-top: 60px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .feature-card {
+      background: rgba(24, 24, 37, 0.6);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 28px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    }
+    .feature-card:hover {
+      border-color: rgba(255,255,255,0.14);
+      transform: translateY(-3px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 12px; margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .feature-card h3 {
+      font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text);
+    }
+    .feature-card p {
+      font-size: 14px; color: var(--subtext0); line-height: 1.65;
+    }
+
+    /* ── Stats strip ──────────────────────────────────────────── */
+    .stats-section {
+      padding: 0; background: var(--crust);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .stats-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: stretch;
+    }
+    .stat-item {
+      flex: 1; padding: 36px 24px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.05);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-size: 36px; font-weight: 800; letter-spacing: -0.04em;
+      background: linear-gradient(135deg, var(--blue), var(--mauve));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 13px; color: var(--subtext0); margin-top: 4px; }
+
+    /* ── How it works ────────────────────────────────────────── */
+    .how-section { background: var(--mantle); }
+    .steps-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 32px; margin-top: 60px;
+    }
+    .step {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
+    }
+    .step-num {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--surface0); border: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; color: var(--blue);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .step h3 { font-size: 17px; font-weight: 700; }
+    .step p { font-size: 14px; color: var(--subtext0); line-height: 1.65; }
+    .step-connector {
+      display: none;
+    }
+
+    /* ── Pricing ─────────────────────────────────────────────── */
+    .pricing-section { background: var(--crust); }
+
+    /* Free bar */
+    .pricing-free-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 28px; border-radius: 14px;
+      background: var(--mantle); border: 1px solid rgba(255,255,255,0.07);
+      max-width: 960px; margin: 60px auto 20px;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .pricing-free-left { display: flex; flex-direction: column; gap: 4px; }
+    .pricing-free-name { font-size: 17px; font-weight: 700; color: var(--text); }
+    .pricing-free-sub  { font-size: 13px; color: var(--subtext0); }
+    .pricing-free-right { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .pricing-free-features { display: flex; gap: 16px; flex-wrap: wrap; }
+    .pricing-free-feat {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--subtext0);
+    }
+
+    /* Pro cards grid */
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; max-width: 960px; margin: 0 auto;
+    }
+    .pricing-card {
+      border-radius: 20px; padding: 32px; position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .pricing-monthly {
+      background: var(--mantle);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .pricing-yearly {
+      background: linear-gradient(160deg, #1e1e35 0%, #181828 100%);
+      border: 1px solid rgba(249,226,175,0.35);
+      box-shadow: 0 0 60px rgba(249,226,175,0.07), 0 20px 60px rgba(0,0,0,0.3);
+      transform: translateY(-8px);
+    }
+    .pricing-yearly::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(249,226,175,0.6), transparent);
+    }
+    .pricing-lifetime {
+      background: linear-gradient(160deg, #1c1c30 0%, #181825 100%);
+      border: 1px solid rgba(203,166,247,0.25);
+    }
+    .pricing-lifetime::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(203,166,247,0.4), transparent);
+    }
+    .pricing-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 99px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; margin-bottom: 20px; width: fit-content;
+    }
+    .badge-monthly  { background: var(--surface0); color: var(--subtext0); }
+    .badge-yearly   { background: rgba(249,226,175,0.15); color: var(--yellow); }
+    .badge-lifetime { background: rgba(203,166,247,0.12); color: var(--mauve); }
+    .pricing-name { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+    .pricing-price { display: flex; align-items: baseline; gap: 5px; margin-bottom: 4px; }
+    .price-amount  { font-size: 44px; font-weight: 900; letter-spacing: -0.04em; }
+    .price-grad-yellow {
+      background: linear-gradient(135deg, var(--yellow), var(--peach));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .price-grad-mauve {
+      background: linear-gradient(135deg, var(--mauve), var(--blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .price-period { font-size: 14px; color: var(--subtext0); }
+    .price-save {
+      font-size: 11px; font-weight: 700; color: var(--green);
+      background: rgba(166,227,161,0.12); padding: 2px 8px; border-radius: 99px;
+      margin-bottom: 12px; display: inline-block; width: fit-content;
+    }
+    .pricing-desc { font-size: 13px; color: var(--subtext0); margin-bottom: 24px; line-height: 1.6; flex: 1; }
+    .pricing-btn {
+      display: block; width: 100%; padding: 12px 20px;
+      border-radius: 10px; font-size: 14px; font-weight: 700;
+      text-align: center; cursor: pointer; border: none;
+      transition: all 0.2s; font-family: 'Inter', sans-serif; margin-bottom: 20px;
+    }
+    .pricing-btn-ghost {
+      background: var(--surface0); color: var(--text);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .pricing-btn-ghost:hover { background: var(--surface1); }
+    .pricing-btn-yellow {
+      background: linear-gradient(135deg, var(--yellow), var(--peach)); color: #11111B;
+    }
+    .pricing-btn-yellow:hover {
+      filter: brightness(1.08); transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(249,226,175,0.3);
+    }
+    .pricing-btn-mauve {
+      background: linear-gradient(135deg, var(--mauve), var(--blue)); color: #11111B;
+    }
+    .pricing-btn-mauve:hover {
+      filter: brightness(1.08); transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(203,166,247,0.3);
+    }
+    .pricing-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 0 0 20px; }
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+    .pricing-features li {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 13px; color: var(--text);
+    }
+    .pricing-features li.dim { color: var(--subtext0); }
+    .check-icon  { flex-shrink: 0; }
+    .check-green { color: var(--green); }
+    .check-dim   { color: var(--surface2); }
+
+    /* ── FAQ ─────────────────────────────────────────────────── */
+    .faq-section { background: var(--mantle); }
+    .faq-list {
+      max-width: 700px; margin: 60px auto 0;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .faq-item {
+      background: var(--surface0);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px; overflow: hidden;
+    }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px; cursor: pointer;
+      font-weight: 600; font-size: 15px;
+      transition: color 0.15s; user-select: none;
+    }
+    .faq-q:hover { color: var(--blue); }
+    .faq-icon { flex-shrink: 0; transition: transform 0.25s; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-a {
+      font-size: 14px; color: var(--subtext0); line-height: 1.7;
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.3s;
+      padding: 0 22px;
+    }
+    .faq-item.open .faq-a { max-height: 200px; padding: 0 22px 20px; }
+
+    /* ── Final CTA ───────────────────────────────────────────── */
+    .cta-section {
+      background: var(--crust); padding: 96px 24px;
+    }
+    .cta-inner {
+      max-width: 680px; margin: 0 auto; text-align: center;
+    }
+    .cta-glow {
+      position: relative; display: inline-block; width: 100%;
+    }
+    .cta-glow::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(137,180,250,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-title {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900; letter-spacing: -0.03em; margin-bottom: 16px;
+      line-height: 1.05;
+    }
+    .cta-sub {
+      font-size: 17px; color: var(--subtext0); margin-bottom: 36px; line-height: 1.6;
+    }
+    .cta-actions {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    .footer {
+      background: var(--mantle);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 48px 24px 32px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+    }
+    .footer-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 48px; gap: 40px; flex-wrap: wrap;
+    }
+    .footer-brand { max-width: 280px; }
+    .footer-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 16px; margin-bottom: 12px;
+    }
+    .footer-tagline { font-size: 13px; color: var(--subtext0); line-height: 1.6; }
+    .footer-links-group h4 {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--overlay0); margin-bottom: 16px;
+    }
+    .footer-links-group ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links-group a {
+      font-size: 14px; color: var(--subtext0);
+      transition: color 0.15s;
+    }
+    .footer-links-group a:hover { color: var(--text); }
+    .footer-bottom {
+      padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-copy { font-size: 13px; color: var(--overlay0); }
+    .footer-bottom-links {
+      display: flex; gap: 24px; list-style: none;
+    }
+    .footer-bottom-links a {
+      font-size: 13px; color: var(--overlay0); transition: color 0.15s;
+    }
+    .footer-bottom-links a:hover { color: var(--subtext0); }
+
+    /* ── Scroll reveal ───────────────────────────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.08s; }
+    .reveal-delay-2 { transition-delay: 0.16s; }
+    .reveal-delay-3 { transition-delay: 0.24s; }
+    .reveal-delay-4 { transition-delay: 0.32s; }
+    .reveal-delay-5 { transition-delay: 0.40s; }
+    .reveal-delay-6 { transition-delay: 0.48s; }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .pricing-grid  { grid-template-columns: 1fr; max-width: 440px; }
+      .pricing-yearly { transform: none; }
+      .pricing-free-bar { flex-direction: column; align-items: flex-start; }
+      .steps-grid    { grid-template-columns: 1fr; }
+      .stats-inner   { flex-wrap: wrap; }
+      .stat-item     { flex: 1 0 50%; border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.05); }
+      .nav-links { display: none; }
+      .window-body { height: 340px; }
+      .win-sidebar { width: 140px; }
+    }
+    @media (max-width: 600px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .hero-actions  { flex-direction: column; width: 100%; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+      .footer-top    { flex-direction: column; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .win-sidebar   { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+  <a href="/" class="nav-logo" aria-label="DiskTree home">
+    <div class="nav-logo-icon" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" stroke="#89B4FA" stroke-width="2"/>
+        <circle cx="12" cy="12" r="4" stroke="#CBA6F7" stroke-width="2"/>
+        <circle cx="12" cy="12" r="1.5" fill="#89B4FA"/>
+      </svg>
+    </div>
+    DiskTree
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="#pricing" class="btn btn-ghost">View Plans</a>
+    <!-- Replace with your Lemon Squeezy checkout URL -->
+    <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
+       class="btn btn-pro lemonsqueezy-button"
+       aria-label="Get DiskTree Pro">
+      Get Pro
+    </a>
+  </div>
+</nav>
+
+
+<!-- ══ HERO ══════════════════════════════════════════════════════ -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-glow" aria-hidden="true"></div>
+
+  <div class="hero-badge">
+    <span class="hero-badge-dot" aria-hidden="true"></span>
+    Now available for macOS 13+
+  </div>
+
+  <h1 class="hero-title" id="hero-title">
+    See exactly what's<br><span class="grad">eating your disk.</span>
+  </h1>
+
+  <p class="hero-sub">
+    DiskTree maps every byte on your Mac into a stunning visual treemap. Find space hogs in seconds, clean them up in one click.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#download" class="btn btn-primary btn-lg">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Download Free
+    </a>
+    <!-- Replace with your Lemon Squeezy checkout URL -->
+    <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
+       class="btn btn-pro btn-lg lemonsqueezy-button">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      Get Pro — $9 / mo
+    </a>
+  </div>
+
+  <p class="hero-meta">macOS 13 Ventura or later &nbsp;·&nbsp; <span>Free forever</span>, Pro unlocks cleanup &amp; alerts</p>
+
+  <!-- App window mockup -->
+  <div class="mockup-wrap" aria-hidden="true">
+    <div class="mockup-shadow"></div>
+    <div class="app-window">
+      <div class="window-chrome">
+        <div class="traffic traffic-red"></div>
+        <div class="traffic traffic-yellow"></div>
+        <div class="traffic traffic-green"></div>
+        <div class="window-title">DiskTree — Macintosh HD</div>
+        <div style="width:52px"></div>
+      </div>
+      <div class="window-body">
+        <!-- Sidebar -->
+        <aside class="win-sidebar">
+          <div class="win-sidebar-header">
+            <div class="win-sidebar-icon"></div>
+            <div class="win-sidebar-title">DiskTree</div>
+            <div class="win-sidebar-badge">✦ PRO</div>
+          </div>
+          <div class="win-nav-item active">
+            <div class="win-nav-dot" style="background:var(--blue)"></div>Explorer
+          </div>
+          <div class="win-nav-item">
+            <div class="win-nav-dot" style="background:var(--peach)"></div>Diagnosis
+          </div>
+          <div class="win-nav-item">
+            <div class="win-nav-dot" style="background:var(--mauve)"></div>Developer
+          </div>
+          <div class="win-nav-item">
+            <div class="win-nav-dot" style="background:var(--green)"></div>Creative
+          </div>
+          <div class="win-nav-item">
+            <div class="win-nav-dot" style="background:var(--teal)"></div>Monitor
+          </div>
+        </aside>
+
+        <!-- Treemap -->
+        <main class="win-main">
+          <div class="win-toolbar">
+            <div class="win-path">/Users/you</div>
+            <button class="win-btn" aria-label="Scan">Scan</button>
+            <button class="win-btn" aria-label="Up">Up ↑</button>
+          </div>
+          <div class="treemap">
+            <div class="tm-row">
+              <div class="tm-cell cell-xcode" style="flex:2.8">
+                <div class="tm-label">Xcode DerivedData<br><span class="tm-size">42.3 GB</span></div>
+              </div>
+              <div class="tm-cell cell-docker" style="flex:1.5">
+                <div class="tm-label">Docker<br><span class="tm-size">18.1 GB</span></div>
+              </div>
+              <div class="tm-cell cell-node" style="flex:1.1">
+                <div class="tm-label">node_modules<br><span class="tm-size">12.4 GB</span></div>
+              </div>
+            </div>
+            <div class="tm-row">
+              <div class="tm-cell cell-home" style="flex:1.8">
+                <div class="tm-label">Documents<br><span class="tm-size">9.7 GB</span></div>
+              </div>
+              <div class="tm-cell cell-adobe" style="flex:1.4">
+                <div class="tm-label">Adobe Cache<br><span class="tm-size">7.2 GB</span></div>
+              </div>
+              <div class="tm-cell cell-cache" style="flex:1.3">
+                <div class="tm-label">User Caches<br><span class="tm-size">5.8 GB</span></div>
+              </div>
+              <div class="tm-cell cell-sys" style="flex:0.9">
+                <div class="tm-label">System<br><span class="tm-size">3.1 GB</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="win-statusbar">
+            <span><span class="statusbar-dot" style="background:var(--blue)"></span>Macintosh HD &nbsp;·&nbsp; 98.6 GB used of 512 GB</span>
+            <span style="color:var(--red)">19.3% free</span>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ STATS ══════════════════════════════════════════════════════ -->
+<div class="stats-section" aria-label="Key statistics">
+  <div class="stats-inner">
+    <div class="stat-item reveal">
+      <div class="stat-num">5 sec</div>
+      <div class="stat-label">To find your biggest space hogs</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-1">
+      <div class="stat-num">24+</div>
+      <div class="stat-label">Cleanup categories scanned</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-2">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Native Swift — no Electron bloat</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-3">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Data ever leaves your Mac</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ FEATURES ══════════════════════════════════════════════════ -->
+<section class="features-section" id="features" aria-labelledby="features-title">
+  <div class="section-inner">
+    <p class="section-label reveal">Everything you need</p>
+    <h2 class="section-title reveal reveal-delay-1" id="features-title">Built for people who<br>care about their Mac.</h2>
+    <p class="section-sub reveal reveal-delay-2">Every feature is crafted to be fast, native, and actually useful — not a bloated suite of tools you'll never use.</p>
+
+    <div class="features-grid">
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon" style="background:rgba(137,180,250,0.12)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#89B4FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <h3>Visual Treemap</h3>
+        <p>Every file and folder rendered as a proportional block. Instantly see what's big. Drill in with a click. Navigate back up with ease.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon" style="background:rgba(249,226,175,0.12)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F9E2AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        </div>
+        <h3>Why Is My Mac Full?</h3>
+        <p>One-click diagnosis scans 24+ categories — Xcode, Docker, Adobe, node_modules, iOS backups — and tells you exactly what to delete.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon" style="background:rgba(166,227,161,0.12)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A6E3A1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        </div>
+        <h3>Recover Space (Pro)</h3>
+        <p>Move junk straight to Trash from inside the app. Xcode DerivedData, Homebrew cache, pip, CocoaPods — all gone in one click.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon" style="background:rgba(203,166,247,0.12)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#CBA6F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 9H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5S16.33 9 15.5 9z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 15H10v-1.5c0-.83-.67-1.5-1.5-1.5S7 12.67 7 13.5 7.67 15 8.5 15z"/></svg>
+        </div>
+        <h3>Developer Deep Scan</h3>
+        <p>Purpose-built rules for devs. Finds Xcode archives, device support files, Gradle caches, Maven repos, and all your node_modules.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon" style="background:rgba(250,179,135,0.12)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FAB387" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>100% Private</h3>
+        <p>DiskTree runs entirely on-device. No telemetry, no analytics, no cloud uploads. Your file names never leave your Mac.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon" style="background:rgba(148,226,213,0.12)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94E2D5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Menu Bar Monitor (Pro)</h3>
+        <p>Disk usage always visible in your menu bar. Get notified before you run out of space — not after Xcode refuses to build.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ HOW IT WORKS ══════════════════════════════════════════════ -->
+<section class="how-section" aria-labelledby="how-title">
+  <div class="section-inner">
+    <p class="section-label reveal">How it works</p>
+    <h2 class="section-title reveal reveal-delay-1" id="how-title">From download to clean<br>in under a minute.</h2>
+
+    <div class="steps-grid">
+      <div class="step reveal reveal-delay-1">
+        <div class="step-num">01</div>
+        <div>
+          <h3>Download &amp; Install</h3>
+          <p>One-click <code>.pkg</code> installer. No admin account required, no App Store hoops. DiskTree is ready in seconds.</p>
+        </div>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-num">02</div>
+        <div>
+          <h3>Scan Your Disk</h3>
+          <p>Hit Scan and watch your disk render into a live treemap. Hover any block to see size and path. Click to drill in.</p>
+        </div>
+      </div>
+      <div class="step reveal reveal-delay-3">
+        <div class="step-num">03</div>
+        <div>
+          <h3>Clean Up (Pro)</h3>
+          <p>Switch to Diagnosis, run a full scan, and move space hogs to Trash directly from the app — with a confirmation dialog so nothing is deleted by accident.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ PRICING ═══════════════════════════════════════════════════ -->
+<section class="pricing-section" id="pricing" aria-labelledby="pricing-title">
+  <div class="section-inner">
+    <p class="section-label reveal" style="text-align:center">Simple pricing</p>
+    <h2 class="section-title reveal reveal-delay-1" id="pricing-title" style="text-align:center">Start free.<br>Upgrade when you're ready.</h2>
+    <p class="section-sub reveal reveal-delay-2" style="text-align:center;margin:0 auto">No subscriptions by default. Buy once, own it — or go monthly. Your call.</p>
+
+    <!-- Free bar -->
+    <div class="pricing-free-bar reveal reveal-delay-1">
+      <div class="pricing-free-left">
+        <div class="pricing-free-name">DiskTree Free</div>
+        <div class="pricing-free-sub">Always free. No credit card required.</div>
+      </div>
+      <div class="pricing-free-right">
+        <div class="pricing-free-features">
+          <div class="pricing-free-feat">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#A6E3A1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Visual treemap explorer
+          </div>
+          <div class="pricing-free-feat">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#A6E3A1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Disk diagnosis (view only)
+          </div>
+          <div class="pricing-free-feat">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#A6E3A1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Reveal in Finder
+          </div>
+        </div>
+        <a href="#download" class="btn btn-ghost" style="white-space:nowrap">Download Free</a>
+      </div>
+    </div>
+
+    <!-- 3 Pro variants -->
+    <div class="pricing-grid">
+
+      <!-- Monthly -->
+      <div class="pricing-card pricing-monthly reveal reveal-delay-1">
+        <div class="pricing-badge badge-monthly">Monthly</div>
+        <div class="pricing-name">DiskTree Pro</div>
+        <div class="pricing-price">
+          <span class="price-amount" style="color:var(--text)">$2.99</span>
+          <span class="price-period">/ month</span>
+        </div>
+        <p class="pricing-desc">Full Pro access billed monthly. Cancel anytime.</p>
+        <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
+           class="pricing-btn pricing-btn-ghost lemonsqueezy-button"
+           aria-label="Subscribe monthly for $2.99">
+          Get Monthly
+        </a>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features" aria-label="Monthly plan features">
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>All Pro features</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Recover space</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Menu bar monitor</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Disk alerts</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Cancel anytime</li>
+        </ul>
+      </div>
+
+      <!-- Yearly — Most Popular -->
+      <div class="pricing-card pricing-yearly reveal reveal-delay-2">
+        <div class="pricing-badge badge-yearly">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Most Popular
+        </div>
+        <div class="pricing-name" style="color:var(--yellow)">DiskTree Pro</div>
+        <div class="pricing-price">
+          <span class="price-amount price-grad-yellow">$14.99</span>
+          <span class="price-period">/ year</span>
+        </div>
+        <div class="price-save">Save 58% vs monthly</div>
+        <p class="pricing-desc">Best value for regular users. One payment covers the full year.</p>
+        <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
+           class="pricing-btn pricing-btn-yellow lemonsqueezy-button"
+           aria-label="Subscribe yearly for $14.99">
+          Get Yearly
+        </a>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features" aria-label="Yearly plan features">
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>All Pro features</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Recover space</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Menu bar monitor</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Disk alerts</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Priority email support</li>
+        </ul>
+      </div>
+
+      <!-- Lifetime -->
+      <div class="pricing-card pricing-lifetime reveal reveal-delay-3">
+        <div class="pricing-badge badge-lifetime">Lifetime</div>
+        <div class="pricing-name" style="color:var(--mauve)">DiskTree Pro</div>
+        <div class="pricing-price">
+          <span class="price-amount price-grad-mauve">$34.99</span>
+          <span class="price-period">once</span>
+        </div>
+        <p class="pricing-desc">Pay once, own it forever. All future updates included. No renewals.</p>
+        <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
+           class="pricing-btn pricing-btn-mauve lemonsqueezy-button"
+           aria-label="Buy lifetime license for $34.99">
+          Buy Lifetime
+        </a>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features" aria-label="Lifetime plan features">
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>All Pro features</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Recover space</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Menu bar monitor</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Disk alerts</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>All future updates free</li>
+          <li><svg class="check-icon check-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Priority email support</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <p class="reveal" style="text-align:center;font-size:13px;color:var(--overlay0);margin-top:28px">
+      Secure checkout via Lemon Squeezy · License key delivered instantly · Up to 3 Macs per license
+    </p>
+  </div>
+</section>
+
+
+<!-- ══ FAQ ════════════════════════════════════════════════════════ -->
+<section class="faq-section" id="faq" aria-labelledby="faq-title">
+  <div class="section-inner">
+    <p class="section-label reveal" style="text-align:center">FAQ</p>
+    <h2 class="section-title reveal reveal-delay-1" id="faq-title" style="text-align:center">Common questions.</h2>
+
+    <div class="faq-list">
+
+      <div class="faq-item reveal reveal-delay-1">
+        <button class="faq-q" aria-expanded="false">
+          Is DiskTree safe to use?
+          <svg class="faq-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-a">
+          Yes. DiskTree only reads file metadata to build the treemap — it never automatically deletes anything. When you use the Pro "Recover Space" feature, files go to your Trash first (not permanently deleted), so you can always restore them.
+        </div>
+      </div>
+
+      <div class="faq-item reveal reveal-delay-2">
+        <button class="faq-q" aria-expanded="false">
+          How do I activate my Pro license?
+          <svg class="faq-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-a">
+          After purchase you'll receive a license key by email. Open DiskTree, click the "Free — Upgrade" badge in the sidebar, paste your key into the activation field, and click Activate. Pro features unlock instantly.
+        </div>
+      </div>
+
+      <div class="faq-item reveal reveal-delay-3">
+        <button class="faq-q" aria-expanded="false">
+          Does DiskTree send any data off my Mac?
+          <svg class="faq-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-a">
+          Never. DiskTree has no analytics, no telemetry, and no cloud sync. License key validation is done locally using a cryptographic hash — no network request is made at any point.
+        </div>
+      </div>
+
+      <div class="faq-item reveal reveal-delay-4">
+        <button class="faq-q" aria-expanded="false">
+          Can I use one license on multiple Macs?
+          <svg class="faq-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-a">
+          Each license key works on up to 3 Macs you personally own. If you need more, just purchase additional licenses.
+        </div>
+      </div>
+
+      <div class="faq-item reveal reveal-delay-5">
+        <button class="faq-q" aria-expanded="false">
+          What macOS version does DiskTree require?
+          <svg class="faq-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-a">
+          DiskTree requires macOS 13 Ventura or later, on both Intel and Apple Silicon Macs.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ FINAL CTA ══════════════════════════════════════════════════ -->
+<section class="cta-section" id="download" aria-labelledby="cta-title">
+  <div class="cta-inner">
+    <div class="cta-glow reveal">
+      <h2 class="cta-title" id="cta-title">
+        Your disk won't clean itself.
+      </h2>
+      <p class="cta-sub">Download DiskTree free and see what's actually filling up your Mac.</p>
+      <div class="cta-actions">
+        <a href="/download" class="btn btn-primary btn-lg">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download Free (.pkg)
+        </a>
+        <!-- Replace with your Lemon Squeezy checkout URL -->
+        <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
+           class="btn btn-pro btn-lg lemonsqueezy-button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          Get Pro — $9 / mo
+        </a>
+      </div>
+      <p style="margin-top:20px;font-size:13px;color:var(--overlay0)">
+        macOS 13+ · Apple Silicon &amp; Intel · v1.0.0
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ FOOTER ══════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="nav-logo-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="#89B4FA" stroke-width="2"/>
+              <circle cx="12" cy="12" r="4" stroke="#CBA6F7" stroke-width="2"/>
+              <circle cx="12" cy="12" r="1.5" fill="#89B4FA"/>
+            </svg>
+          </div>
+          DiskTree
+        </div>
+        <p class="footer-tagline">A native macOS disk space analyzer. Find space hogs, clean up junk, monitor in real time.</p>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#download">Download</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="mailto:support@disktree.app">Email Support</a></li>
+          <li><a href="/changelog">Changelog</a></li>
+          <li><a href="/privacy">Privacy Policy</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>System</h4>
+        <ul>
+          <li><a href="#download">macOS 13 Ventura</a></li>
+          <li><a href="#download">macOS 14 Sonoma</a></li>
+          <li><a href="#download">macOS 15 Sequoia</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 DiskTree. All rights reserved.</p>
+      <ul class="footer-bottom-links">
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/terms">Terms</a></li>
+        <li><a href="mailto:support@disktree.app">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+  // ── Nav scroll effect ────────────────────────────────────────
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  // ── Scroll reveal ────────────────────────────────────────────
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+
+  // ── FAQ accordion ────────────────────────────────────────────
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      // close all
+      document.querySelectorAll('.faq-item').forEach(i => {
+        i.classList.remove('open');
+        i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+      });
+      // open clicked if it was closed
+      if (!isOpen) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

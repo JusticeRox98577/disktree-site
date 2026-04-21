@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap');
+  body {
+    width:1600px; height:900px; overflow:hidden;
+    background:#11111B;
+    font-family:'Inter',sans-serif;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    position:relative; gap:40px;
+  }
+  .bg {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 1200px 700px at 50% 40%, rgba(137,180,250,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 400px at 15% 90%, rgba(203,166,247,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse 400px 300px at 85% 10%, rgba(148,226,213,0.04) 0%, transparent 50%);
+  }
+  .grid {
+    position:absolute; inset:0;
+    background-image:radial-gradient(rgba(137,180,250,0.03) 1px, transparent 1px);
+    background-size:44px 44px;
+  }
+
+  /* Top brand bar */
+  .topbar {
+    position:relative; z-index:2;
+    display:flex; align-items:center; gap:14px;
+  }
+  .topbar-icon {
+    width:52px; height:52px; border-radius:13px;
+    background:linear-gradient(135deg,#313244,#1E1E2E);
+    border:1px solid rgba(137,180,250,0.3);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 20px rgba(0,0,0,0.4);
+  }
+  .topbar-name { font-size:26px; font-weight:800; color:#CDD6F4; }
+  .topbar-pro {
+    padding:5px 12px; border-radius:99px; font-size:12px; font-weight:700;
+    background:rgba(249,226,175,0.12); color:#F9E2AF;
+    border:1px solid rgba(249,226,175,0.25);
+    letter-spacing:0.04em;
+  }
+
+  /* App window */
+  .app-window {
+    position:relative; z-index:2;
+    width:960px;
+    border-radius:14px; overflow:hidden;
+    border:1px solid rgba(255,255,255,0.08);
+    box-shadow:0 60px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+    background:#181825;
+  }
+  .win-chrome {
+    display:flex; align-items:center; gap:8px;
+    padding:12px 16px;
+    background:#181825;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .dot { width:12px; height:12px; border-radius:50%; }
+  .win-title { flex:1; text-align:center; font-size:11px; color:#6C7086; font-weight:500; }
+  .win-body { display:flex; height:440px; }
+  .win-sb {
+    width:160px; background:#181825;
+    border-right:1px solid rgba(255,255,255,0.05);
+    padding:12px 8px; display:flex; flex-direction:column; gap:2px; flex-shrink:0;
+  }
+  .sb-head {
+    display:flex; flex-direction:column; align-items:center; gap:5px;
+    padding:10px 8px 16px;
+  }
+  .sb-icon {
+    width:30px; height:30px; border-radius:8px;
+    background:linear-gradient(135deg,#89B4FA,#CBA6F7);
+  }
+  .sb-title { font-size:10px; font-weight:700; color:#CDD6F4; }
+  .sb-badge {
+    font-size:8px; padding:2px 8px; border-radius:99px;
+    background:rgba(249,226,175,0.15); color:#F9E2AF; font-weight:600;
+  }
+  .sb-item {
+    display:flex; align-items:center; gap:7px;
+    padding:6px 10px; border-radius:6px; font-size:10.5px; font-weight:500;
+  }
+  .sb-item.active { background:#313244; color:#CDD6F4; }
+  .sb-item:not(.active) { color:#A6ADC8; }
+  .sb-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+
+  /* disk mini */
+  .disk-mini {
+    margin-top:auto; padding:10px;
+    border-top:1px solid rgba(255,255,255,0.05);
+  }
+  .disk-mini-label { display:flex; justify-content:space-between; font-size:9px; margin-bottom:5px; }
+  .disk-bar-bg { height:4px; border-radius:2px; background:#313244; }
+  .disk-bar-fill { height:4px; border-radius:2px; background:#F38BA8; width:82%; }
+  .disk-mini-nums { display:flex; justify-content:space-between; font-size:8px; color:#6C7086; margin-top:4px; }
+
+  .win-main { flex:1; display:flex; flex-direction:column; }
+  .win-bar {
+    padding:9px 14px; border-bottom:1px solid rgba(255,255,255,0.05);
+    display:flex; gap:8px; align-items:center; background:#181825;
+  }
+  .win-path {
+    flex:1; background:#313244; border-radius:5px;
+    padding:5px 10px; font-size:10px; color:#A6ADC8;
+    font-family:'JetBrains Mono',monospace;
+    border:1px solid rgba(255,255,255,0.05);
+  }
+  .win-btn { padding:5px 10px; background:#313244; border-radius:5px; font-size:10px; color:#89B4FA; font-weight:600; }
+  .treemap { flex:1; padding:6px; display:grid; gap:4px; grid-template-rows:1.1fr 0.9fr; }
+  .tm-row { display:flex; gap:4px; }
+  .tm-c {
+    border-radius:6px; position:relative; overflow:hidden;
+    display:flex; align-items:flex-end; padding:7px 9px;
+  }
+  .tm-c::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.5)); }
+  .tm-lbl { font-size:9px; font-weight:600; color:rgba(255,255,255,0.9); position:relative; z-index:1; line-height:1.3; }
+  .tm-sz { font-size:7.5px; color:rgba(255,255,255,0.6); }
+  .win-status {
+    padding:6px 14px; border-top:1px solid rgba(255,255,255,0.05);
+    display:flex; justify-content:space-between;
+    font-size:9px; color:#6C7086; font-family:'JetBrains Mono',monospace;
+  }
+
+  /* Feature callout pills */
+  .callouts {
+    position:relative; z-index:2;
+    display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
+  }
+  .callout {
+    display:flex; align-items:center; gap:9px;
+    padding:10px 18px; border-radius:12px;
+    background:rgba(24,24,37,0.9);
+    border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+    font-size:13px; font-weight:600; color:#CDD6F4;
+  }
+  .callout-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="grid"></div>
+
+<!-- Brand -->
+<div class="topbar">
+  <div class="topbar-icon">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="9" stroke="#89B4FA" stroke-width="2"/>
+      <circle cx="12" cy="12" r="4" stroke="#CBA6F7" stroke-width="2"/>
+      <circle cx="12" cy="12" r="1.5" fill="#89B4FA"/>
+    </svg>
+  </div>
+  <span class="topbar-name">DiskTree</span>
+  <div class="topbar-pro">✦ PRO</div>
+</div>
+
+<!-- App Window -->
+<div class="app-window">
+  <div class="win-chrome">
+    <div class="dot" style="background:#FF5F57"></div>
+    <div class="dot" style="background:#FFBD2E"></div>
+    <div class="dot" style="background:#28C840"></div>
+    <div class="win-title">DiskTree — Macintosh HD (512 GB)</div>
+    <div style="width:46px"></div>
+  </div>
+  <div class="win-body">
+    <div class="win-sb">
+      <div class="sb-head">
+        <div class="sb-icon"></div>
+        <div class="sb-title">DiskTree</div>
+        <div class="sb-badge">✦ PRO</div>
+      </div>
+      <div class="sb-item active"><div class="sb-dot" style="background:#89B4FA"></div>Explorer</div>
+      <div class="sb-item"><div class="sb-dot" style="background:#FAB387"></div>Diagnosis</div>
+      <div class="sb-item"><div class="sb-dot" style="background:#CBA6F7"></div>Developer</div>
+      <div class="sb-item"><div class="sb-dot" style="background:#A6E3A1"></div>Creative</div>
+      <div class="sb-item"><div class="sb-dot" style="background:#94E2D5"></div>Monitor</div>
+      <div class="disk-mini">
+        <div class="disk-mini-label">
+          <span style="font-size:9px;color:#A6ADC8;font-weight:600">Macintosh HD</span>
+          <span style="font-size:9px;color:#F38BA8">82% full</span>
+        </div>
+        <div class="disk-bar-bg"><div class="disk-bar-fill"></div></div>
+        <div class="disk-mini-nums"><span>420 GB used</span><span>92 GB free</span></div>
+      </div>
+    </div>
+    <div class="win-main">
+      <div class="win-bar">
+        <div class="win-path">/Users/you</div>
+        <div class="win-btn">Scan</div>
+        <div class="win-btn">Up ↑</div>
+      </div>
+      <div class="treemap">
+        <div class="tm-row">
+          <div class="tm-c" style="background:linear-gradient(135deg,#3B4B7A,#2A3560);flex:2.8">
+            <div class="tm-lbl">Xcode DerivedData<br><span class="tm-sz">42.3 GB</span></div>
+          </div>
+          <div class="tm-c" style="background:linear-gradient(135deg,#2A5A5A,#1E4040);flex:1.5">
+            <div class="tm-lbl">Docker<br><span class="tm-sz">18.1 GB</span></div>
+          </div>
+          <div class="tm-c" style="background:linear-gradient(135deg,#4A3060,#2E1E40);flex:1.1">
+            <div class="tm-lbl">node_modules<br><span class="tm-sz">12.4 GB</span></div>
+          </div>
+          <div class="tm-c" style="background:linear-gradient(135deg,#3A3060,#251E40);flex:0.7">
+            <div class="tm-lbl">iOS Backups<br><span class="tm-sz">8.9 GB</span></div>
+          </div>
+        </div>
+        <div class="tm-row">
+          <div class="tm-c" style="background:linear-gradient(135deg,#5A3A2A,#3D2518);flex:1.8">
+            <div class="tm-lbl">Documents<br><span class="tm-sz">9.7 GB</span></div>
+          </div>
+          <div class="tm-c" style="background:linear-gradient(135deg,#4A2A3A,#2E1825);flex:1.4">
+            <div class="tm-lbl">Adobe Cache<br><span class="tm-sz">7.2 GB</span></div>
+          </div>
+          <div class="tm-c" style="background:linear-gradient(135deg,#2A4A3A,#1A3028);flex:1.3">
+            <div class="tm-lbl">User Caches<br><span class="tm-sz">5.8 GB</span></div>
+          </div>
+          <div class="tm-c" style="background:linear-gradient(135deg,#3A3A50,#252535);flex:0.9">
+            <div class="tm-lbl">System<br><span class="tm-sz">3.1 GB</span></div>
+          </div>
+          <div class="tm-c" style="background:linear-gradient(135deg,#4A4020,#302813);flex:0.7">
+            <div class="tm-lbl">Downloads<br><span class="tm-sz">2.4 GB</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="win-status">
+        <span>● 420.1 GB used of 512 GB &nbsp;·&nbsp; 127 folders scanned</span>
+        <span style="color:#F38BA8">⚠ 92 GB free — 18.0%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Feature callouts -->
+<div class="callouts">
+  <div class="callout">
+    <div class="callout-dot" style="background:#89B4FA"></div>
+    Visual Treemap Explorer
+  </div>
+  <div class="callout">
+    <div class="callout-dot" style="background:#A6E3A1"></div>
+    One-Click Space Recovery
+  </div>
+  <div class="callout">
+    <div class="callout-dot" style="background:#94E2D5"></div>
+    Menu Bar Monitor
+  </div>
+  <div class="callout">
+    <div class="callout-dot" style="background:#F9E2AF"></div>
+    Low Disk Alerts
+  </div>
+  <div class="callout">
+    <div class="callout-dot" style="background:#CBA6F7"></div>
+    Developer Deep Scan
+  </div>
+  <div class="callout">
+    <div class="callout-dot" style="background:#FAB387"></div>
+    100% Private
+  </div>
+</div>
+</body>
+</html>

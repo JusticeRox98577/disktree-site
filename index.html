@@ -1130,11 +1130,11 @@
       </h2>
       <p class="cta-sub">Download DiskTree free and see what's actually filling up your Mac.</p>
       <div class="cta-actions">
-        <a href="https://pub-1d081b2e10dd4a2ca6cc036de8faf421.r2.dev/DiskTree-1.0.0.pkg" class="btn btn-primary btn-lg">
+        <a href="#" id="js-download" class="btn btn-primary btn-lg" aria-label="Download DiskTree">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
-          Download Free (.pkg)
+          <span id="js-download-label">Download Free (.pkg)</span>
         </a>
         <!-- Replace with your Lemon Squeezy checkout URL -->
         <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
@@ -1245,6 +1245,36 @@
       }
     });
   });
+</script>
+
+<script>
+  // Fetch latest version from R2 and wire up download buttons
+  (function () {
+    const MANIFEST = 'https://pub-1d081b2e10dd4a2ca6cc036de8faf421.r2.dev/latest.json';
+    fetch(MANIFEST)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var url   = data.download_url;
+        var ver   = data.version || '';
+        var label = ver ? 'Download Free v' + ver + ' (.pkg)' : 'Download Free (.pkg)';
+
+        // Primary CTA download button
+        var btn = document.getElementById('js-download');
+        if (btn) {
+          btn.href = url;
+          var span = document.getElementById('js-download-label');
+          if (span) span.textContent = label;
+        }
+
+        // Any other download anchors on the page
+        document.querySelectorAll('a[data-download]').forEach(function (a) {
+          a.href = url;
+        });
+      })
+      .catch(function () {
+        // Manifest unreachable — leave href="#" so nothing breaks
+      });
+  })();
 </script>
 
 </body>

@@ -23,13 +23,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-  <!-- Paddle Classic checkout -->
-  <!-- Fill in your Vendor ID and Product ID from vendors.paddle.com -->
-  <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
+  <!-- Paddle Billing v2 checkout -->
+  <!-- Client token: vendors.paddle.com → Developer Tools → Authentication → Client-side token -->
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <script>
-    Paddle.Setup({ vendor: YOUR_VENDOR_ID });
+    Paddle.Initialize({ token: 'YOUR_PADDLE_CLIENT_TOKEN' });
     function openPaddleCheckout() {
-      Paddle.Checkout.open({ product: YOUR_PRODUCT_ID, allowQuantity: false });
+      Paddle.Checkout.open({
+        items: [{ priceId: 'pri_01kpxjh6b8j2gngjjhs2ee7488', quantity: 1 }]
+      });
     }
   </script>
 

@@ -23,9 +23,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-  <!-- Lemon Squeezy overlay checkout -->
-  <!-- Replace YOUR_STORE and YOUR_PRODUCT_ID with your real Lemon Squeezy values -->
-  <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
+  <!-- Paddle Classic checkout -->
+  <!-- Fill in your Vendor ID and Product ID from vendors.paddle.com -->
+  <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
+  <script>
+    Paddle.Setup({ vendor: YOUR_VENDOR_ID });
+    function openPaddleCheckout() {
+      Paddle.Checkout.open({ product: YOUR_PRODUCT_ID, allowQuantity: false });
+    }
+  </script>
 
   <style>
     /* ── Reset & Base ─────────────────────────────────────────── */
@@ -692,9 +698,8 @@
   </ul>
   <div class="nav-cta">
     <a href="#pricing" class="btn btn-ghost">View Plans</a>
-    <!-- Replace with your Lemon Squeezy checkout URL -->
-    <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
-       class="btn btn-pro lemonsqueezy-button"
+        <a href="#" onclick="openPaddleCheckout(); return false;"
+       class="btn btn-pro paddle-btn"
        aria-label="Get DiskTree Pro">
       Get Pro
     </a>
@@ -726,9 +731,8 @@
       </svg>
       Download Free
     </a>
-    <!-- Replace with your Lemon Squeezy checkout URL -->
-    <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
-       class="btn btn-pro btn-lg lemonsqueezy-button">
+        <a href="#" onclick="openPaddleCheckout(); return false;"
+       class="btn btn-pro btn-lg paddle-btn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
       </svg>
@@ -981,8 +985,8 @@
           <span class="price-period">/ month</span>
         </div>
         <p class="pricing-desc">Full Pro access billed monthly. Cancel anytime.</p>
-        <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
-           class="pricing-btn pricing-btn-ghost lemonsqueezy-button"
+        <a href="#" onclick="openPaddleCheckout(); return false;"
+           class="pricing-btn pricing-btn-ghost paddle-btn"
            aria-label="Subscribe monthly for $2.99">
           Get Monthly
         </a>
@@ -1009,8 +1013,8 @@
         </div>
         <div class="price-save">Save 58% vs monthly</div>
         <p class="pricing-desc">Best value for regular users. One payment covers the full year.</p>
-        <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
-           class="pricing-btn pricing-btn-yellow lemonsqueezy-button"
+        <a href="#" onclick="openPaddleCheckout(); return false;"
+           class="pricing-btn pricing-btn-yellow paddle-btn"
            aria-label="Subscribe yearly for $14.99">
           Get Yearly
         </a>
@@ -1033,8 +1037,8 @@
           <span class="price-period">once</span>
         </div>
         <p class="pricing-desc">Pay once, own it forever. All future updates included. No renewals.</p>
-        <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
-           class="pricing-btn pricing-btn-mauve lemonsqueezy-button"
+        <a href="#" onclick="openPaddleCheckout(); return false;"
+           class="pricing-btn pricing-btn-mauve paddle-btn"
            aria-label="Buy lifetime license for $34.99">
           Buy Lifetime
         </a>
@@ -1052,7 +1056,7 @@
     </div>
 
     <p class="reveal" style="text-align:center;font-size:13px;color:var(--overlay0);margin-top:28px">
-      Secure checkout via Lemon Squeezy · License key delivered instantly · Up to 3 Macs per license
+      Secure checkout via Paddle · License key delivered instantly · Up to 3 Macs per license
     </p>
   </div>
 </section>
@@ -1136,9 +1140,8 @@
           </svg>
           <span id="js-download-label">Download Free (.pkg)</span>
         </a>
-        <!-- Replace with your Lemon Squeezy checkout URL -->
-        <a href="https://disktree.lemonsqueezy.com/checkout/buy/5e1705f2-2fc6-42fc-a313-db5841690cae"
-           class="btn btn-pro btn-lg lemonsqueezy-button">
+                <a href="#" onclick="openPaddleCheckout(); return false;"
+           class="btn btn-pro btn-lg paddle-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>

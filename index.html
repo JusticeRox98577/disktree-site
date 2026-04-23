@@ -136,6 +136,14 @@
       justify-content: center;
       padding: 120px 24px 80px;
       position: relative; overflow: hidden; text-align: center;
+      isolation: isolate;
+    }
+    /* Fade the hero glow out before it hits the next section */
+    .hero::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 180px;
+      background: linear-gradient(to bottom, transparent, var(--crust));
+      pointer-events: none; z-index: 2;
     }
     .hero-glow {
       position: absolute; inset: 0; pointer-events: none;
@@ -199,7 +207,7 @@
 
     /* ── App Window Mockup ────────────────────────────────────── */
     .mockup-wrap {
-      position: relative; z-index: 1;
+      position: relative; z-index: 3;
       width: 100%; max-width: 960px; margin: 0 auto;
       animation: float 6s ease-in-out infinite;
     }
@@ -1147,7 +1155,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
-          Get Pro — $9 / mo
+          Get Pro — $2.99 / mo
         </a>
       </div>
       <p style="margin-top:20px;font-size:13px;color:var(--overlay0)">

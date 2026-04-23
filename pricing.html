@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing — DiskTree</title>
+  <meta name="description" content="Get DiskTree Pro — large file scanner, duplicate finder, app waste analyzer, disk forecasting and more for $2.99/month." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Paddle Billing v2 -->
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <script>
+    Paddle.Initialize({ token: 'live_ff7877057a2d3931c03e8fa87fc' });
+    function openCheckout() {
+      Paddle.Checkout.open({
+        items: [{ priceId: 'pri_01kpxjh6b8j2gngjjhs2ee7488', quantity: 1 }]
+      });
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #11111B; color: #CDD6F4; line-height: 1.6; }
+    a { color: #89B4FA; text-decoration: none; }
+
+    nav {
+      padding: 18px 40px; border-bottom: 1px solid #313244;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-weight: 700; font-size: 17px; color: #CDD6F4; }
+    .nav-back { font-size: 13px; color: #A6ADC8; }
+    .nav-back:hover { color: #CDD6F4; }
+
+    .page { max-width: 960px; margin: 0 auto; padding: 80px 24px 120px; text-align: center; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 5px 14px; border-radius: 99px;
+      background: rgba(137,180,250,0.1); border: 1px solid rgba(137,180,250,0.25);
+      font-size: 12px; font-weight: 600; color: #89B4FA;
+      letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 24px;
+    }
+    h1 { font-size: clamp(36px, 5vw, 56px); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 16px; }
+    .sub { font-size: 17px; color: #A6ADC8; max-width: 480px; margin: 0 auto 60px; }
+
+    .cards {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+      max-width: 760px; margin: 0 auto 48px;
+    }
+    @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } }
+
+    .card {
+      background: #1E1E2E; border: 1px solid #313244;
+      border-radius: 16px; padding: 32px 28px; text-align: left;
+      position: relative;
+    }
+    .card.featured {
+      border-color: rgba(137,180,250,0.4);
+      background: linear-gradient(135deg, #1E1E2E 0%, #1a1a2e 100%);
+    }
+    .card-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #A6ADC8; margin-bottom: 16px;
+    }
+    .card.featured .card-label { color: #89B4FA; }
+    .price { font-size: 48px; font-weight: 900; letter-spacing: -0.03em; color: #CDD6F4; }
+    .price span { font-size: 16px; font-weight: 500; color: #6C7086; }
+    .price-sub { font-size: 13px; color: #6C7086; margin: 4px 0 24px; }
+    .card-features { list-style: none; margin-bottom: 28px; }
+    .card-features li {
+      font-size: 13px; color: #A6ADC8; padding: 5px 0;
+      display: flex; align-items: center; gap: 9px;
+    }
+    .card-features li::before { content: '✓'; color: #A6E3A1; font-weight: 700; font-size: 12px; }
+    .card-features li.muted { color: #45475A; }
+    .card-features li.muted::before { content: '—'; color: #45475A; }
+
+    .btn {
+      display: block; width: 100%; padding: 13px;
+      border-radius: 10px; font-size: 14px; font-weight: 700;
+      cursor: pointer; border: none; text-align: center;
+      transition: all 0.2s;
+    }
+    .btn-free {
+      background: #313244; color: #CDD6F4;
+    }
+    .btn-free:hover { background: #45475A; }
+    .btn-pro {
+      background: linear-gradient(135deg, #F9E2AF, #FAB387);
+      color: #11111B;
+    }
+    .btn-pro:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 4px 24px rgba(249,226,175,0.3); }
+
+    .popular-tag {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, #F9E2AF, #FAB387);
+      color: #11111B; font-size: 10px; font-weight: 800;
+      padding: 3px 12px; border-radius: 99px; white-space: nowrap;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+
+    .guarantee {
+      font-size: 13px; color: #6C7086;
+    }
+    .guarantee strong { color: #A6ADC8; }
+
+    .compare { max-width: 600px; margin: 80px auto 0; text-align: left; }
+    .compare h2 { font-size: 22px; font-weight: 800; margin-bottom: 24px; text-align: center; }
+    .compare-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 11px 0; border-bottom: 1px solid #1E1E2E; font-size: 13px;
+    }
+    .compare-row:last-child { border-bottom: none; }
+    .compare-row span { color: #A6ADC8; }
+    .chk { font-size: 14px; font-weight: 700; }
+    .chk.yes { color: #A6E3A1; }
+    .chk.no { color: #45475A; }
+    .col-heads {
+      display: flex; justify-content: flex-end; gap: 0;
+      padding-bottom: 8px; border-bottom: 1px solid #313244; margin-bottom: 4px;
+    }
+    .col-head { width: 80px; text-align: center; font-size: 11px; font-weight: 700; color: #6C7086; text-transform: uppercase; letter-spacing: 0.05em; }
+    .col-head.pro { color: #F9E2AF; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">DiskTree</a>
+  <a href="/" class="nav-back">← Back to home</a>
+</nav>
+
+<div class="page">
+  <div class="badge">Simple pricing</div>
+  <h1>Free to try.<br>Pro to keep.</h1>
+  <p class="sub">Start with the free version. Upgrade when you're ready to reclaim serious space.</p>
+
+  <div class="cards">
+    <!-- Free -->
+    <div class="card">
+      <div class="card-label">Free</div>
+      <div class="price">$0</div>
+      <div class="price-sub">forever</div>
+      <ul class="card-features">
+        <li>Treemap disk explorer</li>
+        <li>Disk space diagnosis</li>
+        <li>Real-time usage monitor</li>
+        <li class="muted">Large file scanner</li>
+        <li class="muted">Duplicate finder</li>
+        <li class="muted">App waste analyzer</li>
+        <li class="muted">Disk forecasting</li>
+        <li class="muted">Scheduled scans</li>
+      </ul>
+      <a href="/#download" class="btn btn-free">Download Free</a>
+    </div>
+
+    <!-- Pro -->
+    <div class="card featured">
+      <div class="popular-tag">Most Popular</div>
+      <div class="card-label">Pro</div>
+      <div class="price">$2.99 <span>/mo</span></div>
+      <div class="price-sub">7-day free trial · cancel anytime</div>
+      <ul class="card-features">
+        <li>Everything in Free</li>
+        <li>Large file scanner</li>
+        <li>Duplicate file finder</li>
+        <li>App waste score</li>
+        <li>Phantom space detector</li>
+        <li>Disk usage forecasting</li>
+        <li>iCloud offload manager</li>
+        <li>Scheduled background scans</li>
+      </ul>
+      <button onclick="openCheckout()" class="btn btn-pro">Start Free Trial →</button>
+    </div>
+  </div>
+
+  <p class="guarantee"><strong>30-day money-back guarantee.</strong> Not happy? Email us for a full refund, no questions asked.</p>
+
+  <!-- Feature comparison -->
+  <div class="compare">
+    <h2>Full comparison</h2>
+    <div class="col-heads">
+      <div class="col-head">Free</div>
+      <div class="col-head pro">Pro</div>
+    </div>
+    <div class="compare-row"><span>Treemap explorer</span><div style="display:flex;gap:0"><div class="chk yes" style="width:80px;text-align:center">✓</div><div class="chk yes" style="width:80px;text-align:center">✓</div></div></div>
+    <div class="compare-row"><span>Disk diagnosis</span><div style="display:flex;gap:0"><div class="chk yes" style="width:80px;text-align:center">✓</div><div class="chk yes" style="width:80px;text-align:center">✓</div></div></div>
+    <div class="compare-row"><span>Real-time monitor</span><div style="display:flex;gap:0"><div class="chk yes" style="width:80px;text-align:center">✓</div><div class="chk yes" style="width:80px;text-align:center">✓</div></div></div>
+    <div class="compare-row"><span>Large file scanner</span><div style="display:flex;gap:0"><div class="chk no" style="width:80px;text-align:center">—</div><div class="chk yes" style="width:80px;text-align:center">✓</div></div></div>
+    <div class="compare-row"><span>Duplicate finder</span><div style="display:flex;gap:0"><div class="chk no" style="width:80px;text-align:center">—</div><div class="chk yes" style="width:80px;text-align:center">✓</div></div></div>
+    <div class="compare-row"><span>App waste analyzer</span><div style="display:flex;gap:0"><div class="chk no" style="width:80px;text-align:center">—</div><div class="chk yes" style="width:80px;text-align:center">✓</div></div></div>
+    <div class="compare-row"><span>Phantom space detector</span><div style="display:flex;gap:0"><div class="chk no" style="width:80px;text-align:center">—</div><div class="chk yes" style="width:80px;text-align:center">✓</div></div></div>
+    <div class="compare-row"><span>Disk forecasting</span><div style="display:flex;gap:0"><div class="chk no" style="width:80px;text-align:center">—</div><div class="chk yes" style="width:80px;text-align:center">✓</div></div></div>
+    <div class="compare-row"><span>iCloud offload</span><div style="display:flex;gap:0"><div class="chk no" style="width:80px;text-align:center">—</div><div class="chk yes" style="width:80px;text-align:center">✓</div></div></div>
+    <div class="compare-row"><span>Scheduled scans</span><div style="display:flex;gap:0"><div class="chk no" style="width:80px;text-align:center">—</div><div class="chk yes" style="width:80px;text-align:center">✓</div></div></div>
+  </div>
+</div>
+
+</body>
+</html>

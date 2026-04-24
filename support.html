@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support — DiskTree</title>
+  <meta name="description" content="Get help with DiskTree — disk space analyzer for Mac." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #11111B; color: #CDD6F4; line-height: 1.6; }
+    a { color: #89B4FA; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav {
+      padding: 18px 40px; border-bottom: 1px solid #313244;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-weight: 700; font-size: 17px; color: #CDD6F4; }
+    .nav-back { font-size: 13px; color: #A6ADC8; }
+    .nav-back:hover { color: #CDD6F4; }
+
+    .page { max-width: 720px; margin: 0 auto; padding: 80px 24px 120px; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 5px 14px; border-radius: 99px;
+      background: rgba(137,180,250,0.1); border: 1px solid rgba(137,180,250,0.25);
+      font-size: 12px; font-weight: 600; color: #89B4FA;
+      letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 24px;
+    }
+    h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 16px; }
+    .sub { font-size: 17px; color: #A6ADC8; margin-bottom: 60px; line-height: 1.65; }
+
+    .contact-card {
+      background: #1E1E2E; border: 1px solid #313244;
+      border-radius: 16px; padding: 36px;
+      margin-bottom: 40px;
+    }
+    .contact-card h2 {
+      font-size: 20px; font-weight: 800; margin-bottom: 10px;
+    }
+    .contact-card p {
+      font-size: 15px; color: #A6ADC8; margin-bottom: 20px; line-height: 1.65;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 22px; border-radius: 9px;
+      font-size: 14px; font-weight: 700;
+      background: #89B4FA; color: #11111B;
+      transition: filter 0.2s, transform 0.2s;
+      border: none; cursor: pointer;
+    }
+    .btn:hover { filter: brightness(1.1); transform: translateY(-1px); text-decoration: none; }
+
+    .faq { margin-top: 60px; }
+    .faq h2 { font-size: 24px; font-weight: 800; margin-bottom: 24px; }
+    .faq-item {
+      border-bottom: 1px solid #313244; padding: 20px 0;
+    }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-item h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #CDD6F4; }
+    .faq-item p { font-size: 14px; color: #A6ADC8; line-height: 1.7; }
+
+    .response-time {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: #A6ADC8; margin-top: 12px;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #A6E3A1; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">DiskTree</a>
+  <a href="/" class="nav-back">← Back to home</a>
+</nav>
+
+<div class="page">
+  <div class="badge">Support</div>
+  <h1>How can we help?</h1>
+  <p class="sub">Have a question, found a bug, or need help activating Pro? We're here.</p>
+
+  <div class="contact-card">
+    <h2>Email Support</h2>
+    <p>Send us a message and we'll get back to you as soon as possible. Please include your macOS version and a description of the issue.</p>
+    <a href="mailto:support@disktree.org" class="btn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      support@disktree.org
+    </a>
+    <div class="response-time">
+      <div class="dot"></div>
+      Typical response time: within 24 hours
+    </div>
+  </div>
+
+  <div class="faq">
+    <h2>Common questions</h2>
+
+    <div class="faq-item">
+      <h3>How do I activate Pro?</h3>
+      <p>Open DiskTree, click the "Free — Upgrade" badge in the sidebar, enter the email address you used at checkout, and click Activate. Pro features unlock instantly.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>I can't open the app — macOS says it's damaged or from an unidentified developer.</h3>
+      <p>Right-click the installer and choose Open, then click Open in the dialog. This only needs to be done once. Alternatively, go to System Settings → Privacy & Security and click "Open Anyway."</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>DiskTree is asking for permissions — is that safe?</h3>
+      <p>Yes. DiskTree needs Full Disk Access to scan your drive. Go to System Settings → Privacy & Security → Full Disk Access and enable DiskTree. Your files never leave your Mac.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>How do I cancel my subscription?</h3>
+      <p>Log in to your Paddle account at <a href="https://my.paddle.com">my.paddle.com</a> to manage or cancel your subscription. You can also email us and we'll handle it for you.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>I want a refund.</h3>
+      <p>We offer a 30-day money-back guarantee, no questions asked. Email <a href="mailto:support@disktree.org">support@disktree.org</a> and we'll process it within 1 business day.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>My subscription is active but Pro isn't unlocking.</h3>
+      <p>Make sure you're entering the exact email you used at checkout. Check for typos and try lowercase. If it still doesn't work, email us with your order confirmation and we'll sort it out.</p>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

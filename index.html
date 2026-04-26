@@ -28,9 +28,9 @@
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <script>
     Paddle.Initialize({ token: 'live_ff7877057a2d3931c03e8fa87fc' });
-    function openPaddleCheckout() {
+    function openPaddleCheckout(priceId) {
       Paddle.Checkout.open({
-        items: [{ priceId: 'pri_01kpxjh6b8j2gngjjhs2ee7488', quantity: 1 }]
+        items: [{ priceId: priceId, quantity: 1 }]
       });
     }
   </script>
@@ -710,7 +710,7 @@
   </ul>
   <div class="nav-cta">
     <a href="#pricing" class="btn btn-ghost">View Plans</a>
-        <a href="#" onclick="openPaddleCheckout(); return false;"
+        <a href="#" onclick="openPaddleCheckout('pri_01kpxktj0e6mt4rrjnh8tpnx7f'); return false;"
        class="btn btn-pro paddle-btn"
        aria-label="Get DiskTree Pro">
       Get Pro
@@ -743,7 +743,7 @@
       </svg>
       Download Free
     </a>
-        <a href="#" onclick="openPaddleCheckout(); return false;"
+        <a href="#" onclick="openPaddleCheckout('pri_01kpxktj0e6mt4rrjnh8tpnx7f'); return false;"
        class="btn btn-pro btn-lg paddle-btn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
@@ -997,7 +997,7 @@
           <span class="price-period">/ month</span>
         </div>
         <p class="pricing-desc">Full Pro access billed monthly. Cancel anytime.</p>
-        <a href="#" onclick="openPaddleCheckout(); return false;"
+        <a href="#" onclick="openPaddleCheckout('pri_01kpxjh6b8j2gngjjhs2ee7488'); return false;"
            class="pricing-btn pricing-btn-ghost paddle-btn"
            aria-label="Subscribe monthly for $2.99">
           Get Monthly
@@ -1025,7 +1025,7 @@
         </div>
         <div class="price-save">Save 58% vs monthly</div>
         <p class="pricing-desc">Best value for regular users. One payment covers the full year.</p>
-        <a href="#" onclick="openPaddleCheckout(); return false;"
+        <a href="#" onclick="openPaddleCheckout('pri_01kpxktj0e6mt4rrjnh8tpnx7f'); return false;"
            class="pricing-btn pricing-btn-yellow paddle-btn"
            aria-label="Subscribe yearly for $14.99">
           Get Yearly
@@ -1049,7 +1049,7 @@
           <span class="price-period">once</span>
         </div>
         <p class="pricing-desc">Pay once, own it forever. All future updates included. No renewals.</p>
-        <a href="#" onclick="openPaddleCheckout(); return false;"
+        <a href="#" onclick="openPaddleCheckout('pri_01kpxkx2wk9p0zwfaphvm2kzva'); return false;"
            class="pricing-btn pricing-btn-mauve paddle-btn"
            aria-label="Buy lifetime license for $34.99">
           Buy Lifetime
@@ -1152,7 +1152,7 @@
           </svg>
           <span id="js-download-label">Download Free (.pkg)</span>
         </a>
-                <a href="#" onclick="openPaddleCheckout(); return false;"
+                <a href="#" onclick="openPaddleCheckout('pri_01kpxktj0e6mt4rrjnh8tpnx7f'); return false;"
            class="btn btn-pro btn-lg paddle-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
